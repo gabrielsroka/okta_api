@@ -1,0 +1,89 @@
+"""Call Okta API. See https://developer.okta.com/docs/reference"""
+
+import requests
+from dotenv import load_dotenv
+import os
+import csv
+
+load_dotenv()
+# Store these in a local .env file.
+url = os.getenv('OKTA_ORG_URL')
+token = os.getenv('OKTA_API_TOKEN')
+
+headers = {
+    'Authorization': 'SSWS ' + token,
+    'Accept': 'application/json'
+}
+
+
+# Groups - https://developer.okta.com/docs/reference/api/groups
+def new_group(group):
+    return requests.post(url + '/api/v1/groups', json=group, headers=headers)
+
+def get_groups(**kwargs):
+    """Get Okta groups.
+
+    **kwargs: such as `q`, `filter`, `limit`, etc. 
+    
+    see https://developer.okta.com/docs/reference/api/groups/#list-groups
+    """
+    return requests.get(url + '/api/v1/groups', params=kwargs, headers=headers)
+
+
+def delete_group(id):
+    return requests.delete(url + '/api/v1/groups/' + id, headers=headers)
+
+# Mappings
+def get_mapping(id):
+    return requests.get(url + '/api/v1/mappings/' + id, headers=headers)
+
+def get_mappings(**kwargs):
+    return requests.get(url + '/api/v1/mappings', params=kwargs, headers=headers)
+
+
+# Users - https://developer.okta.com/docs/reference/api/users
+def get_user(id):
+    return requests.get(url + '/api/v1/users/' + id, headers=headers)
+
+
+def get_users(**kwargs):
+    """Get Okta users.
+    
+    **kwargs: such as `q`, `filter`, `search`, `limit`, etc. 
+    
+    see https://developer.okta.com/docs/reference/api/users/#list-users
+    """
+    return requests.get(url + '/api/v1/users', params=kwargs, headers=headers)
+
+
+def get_user_pages(**kwargs):
+    page = get_users(**kwargs) 
+    while page:
+        yield page
+        page = get_next_page(page.links)    
+
+
+# Util
+def get_next_page(links):
+    next = links.get('next')
+    if next:
+        return requests.get(next['url'], headers=headers)
+    else:
+        return None
+
+
+def import_csv(filename):
+    with open(filename) as f:
+        return [object for object in csv.DictReader(f)]
+
+
+def export_csv(filename, rows, fieldnames):
+    with open(filename, 'w', newline='') as f:
+        writer = csv.DictWriter(f, fieldnames, extrasaction='ignore')
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+# Python requests: , proxies={'https': '127.0.0.1:8888'}, verify='./fiddler.cer'
+# pwsh: ${env:HTTPS_PROXY}='127.0.0.1:8888'; ${env:REQUESTS_CA_BUNDLE}='./fiddler.cer'
+# .env: HTTPS_PROXY=127.0.0.1:8888; REQUESTS_CA_BUNDLE=./fiddler.cer
