@@ -4,6 +4,8 @@ import requests
 from dotenv import load_dotenv
 import os
 import csv
+import datetime
+import time
 
 load_dotenv()
 # Store these in a local .env file.
@@ -11,14 +13,26 @@ url = os.getenv('OKTA_ORG_URL')
 token = os.getenv('OKTA_API_TOKEN')
 
 headers = {
-    'Authorization': 'SSWS ' + token,
+    'Authorization': f'SSWS {token}',
     'Accept': 'application/json'
 }
 
+# Apps
+def get_apps(**kwargs):
+    return requests.get(f'{url}/api/v1/apps', params=kwargs, headers=headers)
+
+def get_app_schema(id):
+    return requests.get(f'{url}/api/v1/meta/schemas/apps/{id}/default', headers=headers)
+
+def get_app_pages(**kwargs):
+    page = get_apps(**kwargs) 
+    while page:
+        yield page
+        page = get_next_page(page.links)    
 
 # Groups - https://developer.okta.com/docs/reference/api/groups
 def new_group(group):
-    return requests.post(url + '/api/v1/groups', json=group, headers=headers)
+    return requests.post(f'{url}/api/v1/groups', json=group, headers=headers)
 
 def get_groups(**kwargs):
     """Get Okta groups.
@@ -27,23 +41,26 @@ def get_groups(**kwargs):
     
     see https://developer.okta.com/docs/reference/api/groups/#list-groups
     """
-    return requests.get(url + '/api/v1/groups', params=kwargs, headers=headers)
-
+    return requests.get(f'{url}/api/v1/groups', params=kwargs, headers=headers)
 
 def delete_group(id):
-    return requests.delete(url + '/api/v1/groups/' + id, headers=headers)
+    return requests.delete(f'{url}/api/v1/groups/{id}', headers=headers)
+
+def add_group_member(groupid, userid):
+    return requests.put(f'{url}/api/v1/groups/{groupid}/users/{userid}', headers=headers)
+
 
 # Mappings
 def get_mapping(id):
-    return requests.get(url + '/api/v1/mappings/' + id, headers=headers)
+    return requests.get(f'{url}/api/v1/mappings/{id}', headers=headers)
 
 def get_mappings(**kwargs):
-    return requests.get(url + '/api/v1/mappings', params=kwargs, headers=headers)
+    return requests.get(f'{url}/api/v1/mappings', params=kwargs, headers=headers)
 
 
 # Users - https://developer.okta.com/docs/reference/api/users
 def get_user(id):
-    return requests.get(url + '/api/v1/users/' + id, headers=headers)
+    return requests.get(f'{url}/api/v1/users/{id}', headers=headers)
 
 
 def get_users(**kwargs):
@@ -53,7 +70,7 @@ def get_users(**kwargs):
     
     see https://developer.okta.com/docs/reference/api/users/#list-users
     """
-    return requests.get(url + '/api/v1/users', params=kwargs, headers=headers)
+    return requests.get(f'{url}/api/v1/users', params=kwargs, headers=headers)
 
 
 def get_user_pages(**kwargs):
@@ -71,6 +88,20 @@ def get_next_page(links):
     else:
         return None
 
+def show_limits():
+    LIMIT_REMAINING = 10
+    while True:
+        r = requests.get(f'{url}/api/v1/users/me', headers=headers)
+        limit = int(r.headers['X-Rate-Limit-Limit'])
+        remaining = int(r.headers['X-Rate-Limit-Remaining'])
+        reset = datetime.datetime.utcfromtimestamp(int(r.headers['X-Rate-Limit-Reset']))
+        now = datetime.datetime.utcnow()
+        print(limit, remaining, reset, now)
+        if remaining < LIMIT_REMAINING:
+            while reset > now:
+                time.sleep(1)
+                print('sleeping', now, reset)
+                now = datetime.datetime.utcnow()
 
 def import_csv(filename):
     with open(filename) as f:
