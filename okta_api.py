@@ -17,12 +17,14 @@ headers = {
     'Accept': 'application/json'
 }
 
-# Apps
+session = requests.Session()
+
+# Apps - https://developer.okta.com/docs/reference/api/apps
 def get_apps(**kwargs):
-    return requests.get(f'{url}/api/v1/apps', params=kwargs, headers=headers)
+    return session.get(f'{url}/api/v1/apps', params=kwargs, headers=headers)
 
 def get_app_schema(id):
-    return requests.get(f'{url}/api/v1/meta/schemas/apps/{id}/default', headers=headers)
+    return session.get(f'{url}/api/v1/meta/schemas/apps/{id}/default', headers=headers)
 
 def get_app_pages(**kwargs):
     page = get_apps(**kwargs) 
@@ -30,9 +32,10 @@ def get_app_pages(**kwargs):
         yield page
         page = get_next_page(page.links)    
 
+
 # Groups - https://developer.okta.com/docs/reference/api/groups
 def new_group(group):
-    return requests.post(f'{url}/api/v1/groups', json=group, headers=headers)
+    return session.post(f'{url}/api/v1/groups', json=group, headers=headers)
 
 def get_groups(**kwargs):
     """Get Okta groups.
@@ -41,27 +44,26 @@ def get_groups(**kwargs):
     
     see https://developer.okta.com/docs/reference/api/groups/#list-groups
     """
-    return requests.get(f'{url}/api/v1/groups', params=kwargs, headers=headers)
+    return session.get(f'{url}/api/v1/groups', params=kwargs, headers=headers)
 
 def delete_group(id):
-    return requests.delete(f'{url}/api/v1/groups/{id}', headers=headers)
+    return session.delete(f'{url}/api/v1/groups/{id}', headers=headers)
 
 def add_group_member(groupid, userid):
-    return requests.put(f'{url}/api/v1/groups/{groupid}/users/{userid}', headers=headers)
+    return session.put(f'{url}/api/v1/groups/{groupid}/users/{userid}', headers=headers)
 
 
-# Mappings
+# Mappings - https://developer.okta.com/docs/reference/api/mappings
 def get_mapping(id):
-    return requests.get(f'{url}/api/v1/mappings/{id}', headers=headers)
+    return session.get(f'{url}/api/v1/mappings/{id}', headers=headers)
 
 def get_mappings(**kwargs):
-    return requests.get(f'{url}/api/v1/mappings', params=kwargs, headers=headers)
+    return session.get(f'{url}/api/v1/mappings', params=kwargs, headers=headers)
 
 
 # Users - https://developer.okta.com/docs/reference/api/users
 def get_user(id):
-    return requests.get(f'{url}/api/v1/users/{id}', headers=headers)
-
+    return session.get(f'{url}/api/v1/users/{id}', headers=headers)
 
 def get_users(**kwargs):
     """Get Okta users.
@@ -70,8 +72,7 @@ def get_users(**kwargs):
     
     see https://developer.okta.com/docs/reference/api/users/#list-users
     """
-    return requests.get(f'{url}/api/v1/users', params=kwargs, headers=headers)
-
+    return session.get(f'{url}/api/v1/users', params=kwargs, headers=headers)
 
 def get_user_pages(**kwargs):
     page = get_users(**kwargs) 
@@ -84,14 +85,14 @@ def get_user_pages(**kwargs):
 def get_next_page(links):
     next = links.get('next')
     if next:
-        return requests.get(next['url'], headers=headers)
+        return session.get(next['url'], headers=headers)
     else:
         return None
 
 def show_limits():
     LIMIT_REMAINING = 10
     while True:
-        r = requests.get(f'{url}/api/v1/users/me', headers=headers)
+        r = session.get(f'{url}/api/v1/users/me', headers=headers)
         limit = int(r.headers['X-Rate-Limit-Limit'])
         remaining = int(r.headers['X-Rate-Limit-Remaining'])
         reset = datetime.datetime.utcfromtimestamp(int(r.headers['X-Rate-Limit-Reset']))
@@ -106,7 +107,6 @@ def show_limits():
 def import_csv(filename):
     with open(filename) as f:
         return [object for object in csv.DictReader(f)]
-
 
 def export_csv(filename, rows, fieldnames):
     with open(filename, 'w', newline='') as f:
