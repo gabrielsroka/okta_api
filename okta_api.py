@@ -4,7 +4,7 @@ import requests
 from dotenv import load_dotenv
 import os
 import csv
-import datetime
+from datetime import datetime
 
 load_dotenv()
 # Store these in a local .env file.
@@ -25,8 +25,8 @@ def get_apps(**kwargs):
 def get_app_schema(id):
     return session.get(f'{url}/api/v1/meta/schemas/apps/{id}/default', headers=headers)
 
-def get_app_groups(id):
-    return session.get(f'{url}/api/v1/apps/{id}/groups', headers=headers)
+def get_app_groups(id, **kwargs):
+    return session.get(f'{url}/api/v1/apps/{id}/groups', params=kwargs, headers=headers)
 
 def get_app_pages(**kwargs):
     page = get_apps(**kwargs) 
