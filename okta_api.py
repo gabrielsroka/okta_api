@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 import os
 import csv
 import datetime
-import time
 
 load_dotenv()
 # Store these in a local .env file.
@@ -95,20 +94,11 @@ def get_next_page(links):
     else:
         return None
 
-def show_limits():
-    LIMIT_REMAINING = 10
-    while True:
-        r = session.get(f'{url}/api/v1/users/me', headers=headers)
-        limit = int(r.headers['X-Rate-Limit-Limit'])
-        remaining = int(r.headers['X-Rate-Limit-Remaining'])
-        reset = datetime.datetime.utcfromtimestamp(int(r.headers['X-Rate-Limit-Reset']))
-        now = datetime.datetime.utcnow()
-        print(limit, remaining, reset, now)
-        if remaining < LIMIT_REMAINING:
-            while reset > now:
-                time.sleep(1)
-                print('sleeping', now, reset)
-                now = datetime.datetime.utcnow()
+def get_limit():
+    limit = int(r.headers['X-Rate-Limit-Limit'])
+    remaining = int(r.headers['X-Rate-Limit-Remaining'])
+    reset = datetime.utcfromtimestamp(int(r.headers['X-Rate-Limit-Reset']))
+    return limit, remaining, reset
 
 def import_csv(filename):
     with open(filename) as f:
