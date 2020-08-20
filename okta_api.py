@@ -94,7 +94,7 @@ def get_next_page(links):
     else:
         return None
 
-def get_limit():
+def get_limit(r):
     limit = int(r.headers['X-Rate-Limit-Limit'])
     remaining = int(r.headers['X-Rate-Limit-Remaining'])
     reset = datetime.utcfromtimestamp(int(r.headers['X-Rate-Limit-Reset']))
