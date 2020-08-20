@@ -7,7 +7,7 @@ url = os.getenv('OKTA_ORG_URL')
 token = os.getenv('OKTA_API_TOKEN')
 
 headers = {
-    'Authorization': 'SSWS ' + token,
+    'Authorization': f'SSWS {token}',
     'Accept': 'application/json'
 }
 
@@ -19,5 +19,5 @@ for name in names:
             'description': ''
         }
     }
-    res = requests.post(url + '/api/v1/groups', json=group, headers=headers)
+    res = requests.post(f'{url}/api/v1/groups', json=group, headers=headers)
     print(res.ok)
