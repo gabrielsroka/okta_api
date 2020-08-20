@@ -1,19 +1,28 @@
 import okta_api
 
-# Export to CSV.
-print('Getting users.')
-users = []
-for page in okta_api.get_user_pages(filter='profile.lastName eq "Doe"'): #, limit=2):
-    for user in page.json():
-        users.append({
-            'id': user['id'], 
-            'login': user['profile']['login'],
-            'email': user['profile']['email']
-        })
-    print('Total users found:', len(users))
+def export_users():
+    # Export to CSV.
+    print('Getting users.')
+    users = []
+    for page in okta_api.get_user_pages(filter='profile.lastName eq "Doe"'): #, limit=2):
+        for user in page.json():
+            users.append({
+                'id': user['id'], 
+                'login': user['profile']['login'],
+                'email': user['profile']['email']
+            })
+        print('Total users found:', len(users))
 
-if len(users) > 0:
-    okta_api.export_csv('users.csv', users, users[0].keys())
+    if users:
+        okta_api.export_csv('users.csv', users, users[0].keys())
+
+def get_schemas():
+    for page in okta_api.get_app_pages():
+        for app in page.json():
+            r = okta_api.get_app_schema(app['id'])
+            if r.ok: # Skip bookmark apps.
+                schema = r.json()
+                print(app['id'], app['label'], schema['definitions']['custom'])
 
 
 # def main():
@@ -25,7 +34,7 @@ if len(users) > 0:
 #         users.extend(pluck(page.json(), keys))
 #         print('Total users found:', len(users))
 
-#     if len(users) > 0:
+#     if users:
 #         okta_api.export_csv('users.csv', users, keys)
 
 # def pluck(list, keys):
