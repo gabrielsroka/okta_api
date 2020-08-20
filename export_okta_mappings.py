@@ -11,7 +11,7 @@ token = os.getenv('OKTA_API_TOKEN')
 filename = 'mappings.json'
 
 headers = {
-    'Authorization': 'SSWS ' + token,
+    'Authorization': f'SSWS {token}',
     'Accept': 'application/json'
 }
 
@@ -36,10 +36,10 @@ def get_mapping_pages(**kwargs):
         page = get_next_page(page.links)  
 
 def get_mapping(id):
-    return requests.get(url + '/api/v1/mappings/' + id, headers=headers)
+    return requests.get(f'{url}/api/v1/mappings/{id}', headers=headers)
 
 def get_mappings(**kwargs):
-    return requests.get(url + '/api/v1/mappings', params=kwargs, headers=headers)
+    return requests.get(f'{url}/api/v1/mappings', params=kwargs, headers=headers)
 
 def get_next_page(links):
     next = links.get('next')
