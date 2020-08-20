@@ -26,6 +26,9 @@ def get_apps(**kwargs):
 def get_app_schema(id):
     return session.get(f'{url}/api/v1/meta/schemas/apps/{id}/default', headers=headers)
 
+def get_app_groups(id):
+    return session.get(f'{url}/api/v1/{id}/groups', headers=headers)
+
 def get_app_pages(**kwargs):
     page = get_apps(**kwargs) 
     while page:
