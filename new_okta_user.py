@@ -4,7 +4,7 @@ url = '...'
 token = '...'
 
 headers = {
-    'Authorization': 'SSWS ' + token,
+    'Authorization': f'SSWS {token}',
     'Accept': 'application/json'
 }
 
@@ -16,5 +16,5 @@ user = {
         'login': 'python@example.com'
     }
 }
-res = requests.post(url + '/api/v1/users', json=user, headers=headers)
+res = requests.post(f'{url}/api/v1/users', json=user, headers=headers)
 print(res.ok)
