@@ -49,6 +49,9 @@ def get_groups(**kwargs):
     """
     return session.get(f'{url}/api/v1/groups', params=kwargs, headers=headers)
 
+def get_group(id):
+    return session.get(f'{url}/api/v1/groups/{id}', headers=headers)
+
 def delete_group(id):
     return session.delete(f'{url}/api/v1/groups/{id}', headers=headers)
 
