@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import os
 import csv
 from datetime import datetime
+import time
 
 load_dotenv()
 # Store these in a local .env file.
@@ -99,6 +100,14 @@ def get_limit(r):
     remaining = int(r.headers['X-Rate-Limit-Remaining'])
     reset = datetime.utcfromtimestamp(int(r.headers['X-Rate-Limit-Reset']))
     return limit, remaining, reset
+
+def snooze(r, LIMIT_REMAINING):
+    limit, remaining, reset = get_limit(r)
+    now = datetime.utcnow()
+    if remaining < LIMIT_REMAINING:
+        while reset > now:
+            time.sleep(1)
+            now = datetime.utcnow()
 
 def import_csv(filename):
     with open(filename) as f:
