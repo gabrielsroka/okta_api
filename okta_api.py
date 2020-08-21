@@ -111,6 +111,7 @@ def snooze(r, LIMIT_REMAINING):
     limit, remaining, reset = get_limit(r)
     now = datetime.utcnow()
     if remaining < LIMIT_REMAINING:
+        print('sleeping...')
         while reset > now:
             time.sleep(1)
             now = datetime.utcnow()
