@@ -12,12 +12,12 @@ import time
 import re
 
 # Change the following lines.
-okta_url = 'https://XXX.oktapreview.com'
-okta_admin_url = 'https://XXX-admin.oktapreview.com'
+okta_url = 'https://XXX.okta.com'
 username = 'XXX'
 
-session = requests.Session()
+okta_admin_url = okta_url.replace('.', '-admin.', 1)
 
+session = requests.Session()
 
 def main():
     sign_in()
