@@ -23,17 +23,23 @@ session = requests.Session()
 def get_apps(**kwargs):
     return session.get(f'{url}/api/v1/apps', params=kwargs, headers=headers)
 
+def get_app_pages(**kwargs):
+    page = get_apps(**kwargs) 
+    while page:
+        yield page
+        page = get_next_page(page.links)    
+
 def get_app_schema(id):
     return session.get(f'{url}/api/v1/meta/schemas/apps/{id}/default', headers=headers)
 
 def get_app_groups(id, **kwargs):
     return session.get(f'{url}/api/v1/apps/{id}/groups', params=kwargs, headers=headers)
 
-def get_app_pages(**kwargs):
-    page = get_apps(**kwargs) 
+def get_app_group_pages(id, **kwargs):
+    page = get_app_groups(id, **kwargs) 
     while page:
         yield page
-        page = get_next_page(page.links)    
+        page = get_next_page(page.links, **kwargs)    
 
 
 # Groups - https://developer.okta.com/docs/reference/api/groups
@@ -88,10 +94,10 @@ def get_user_pages(**kwargs):
 
 
 # Util
-def get_next_page(links):
+def get_next_page(links, **kwargs):
     next = links.get('next')
     if next:
-        return session.get(next['url'], headers=headers)
+        return session.get(next['url'], params=kwargs, headers=headers)
     else:
         return None
 
