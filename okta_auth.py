@@ -10,10 +10,13 @@ import requests
 import getpass
 import time
 import re
+from dotenv import load_dotenv
+import os
 
-# Change the following lines.
-okta_url = 'https://XXX.okta.com'
-username = 'XXX'
+load_dotenv()
+# Store these in a local .env file.
+okta_url = os.getenv('OKTA_ORG_URL') # eg https://XXX.okta.com
+username = os.getenv('OKTA_USERNAME')
 
 okta_admin_url = okta_url.replace('.', '-admin.', 1)
 
@@ -86,15 +89,18 @@ def send_notification(admin_xsrf_token, userid):
     }
     headers = {'X-Okta-XsrfToken': admin_xsrf_token}
     notification = session.post(f'{okta_admin_url}/api/internal/admin/notification', json=body, headers=headers).json()
-    print('\nNotification:\n', notification)
+    print('\nNotification:')
+    print(notification)
 
 def get_user(userid):
     user = session.get(f'{okta_url}/api/v1/users/{userid}').json()
-    print('\nUser:\n', user)
+    print('\nUser:')
+    print(user)
     return user
 
 def get_user_factors(userid):
     factors = session.get(f'{okta_url}/api/v1/users/{userid}/factors').json()
-    print('\nFactors:\n', factors)
+    print('\nFactors:')
+    print(factors)
 
 main()
