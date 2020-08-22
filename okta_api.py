@@ -20,11 +20,11 @@ headers = {
 session = requests.Session()
 
 # Apps - https://developer.okta.com/docs/reference/api/apps
-def get_apps(**kwargs):
-    return session.get(f'{url}/api/v1/apps', params=kwargs, headers=headers)
+def get_apps(**params):
+    return session.get(f'{url}/api/v1/apps', params=params, headers=headers)
 
-def get_app_pages(**kwargs):
-    page = get_apps(**kwargs) 
+def get_app_pages(**params):
+    page = get_apps(**params) 
     while page:
         yield page
         page = get_next_page(page.links)    
@@ -32,28 +32,28 @@ def get_app_pages(**kwargs):
 def get_app_schema(id):
     return session.get(f'{url}/api/v1/meta/schemas/apps/{id}/default', headers=headers)
 
-def get_app_groups(id, **kwargs):
-    return session.get(f'{url}/api/v1/apps/{id}/groups', params=kwargs, headers=headers)
+def get_app_groups(id, **params):
+    return session.get(f'{url}/api/v1/apps/{id}/groups', params=params, headers=headers)
 
-def get_app_group_pages(id, **kwargs):
-    page = get_app_groups(id, **kwargs) 
+def get_app_group_pages(id, **params):
+    page = get_app_groups(id, **params) 
     while page:
         yield page
-        page = get_next_page(page.links, **kwargs)    
+        page = get_next_page(page.links, **params)    
 
 
 # Groups - https://developer.okta.com/docs/reference/api/groups
 def new_group(group):
     return session.post(f'{url}/api/v1/groups', json=group, headers=headers)
 
-def get_groups(**kwargs):
+def get_groups(**params):
     """Get Okta groups.
 
-    **kwargs: such as `q`, `filter`, `limit`, etc. 
+    **params: such as `q`, `filter`, `limit`, etc. 
     
     see https://developer.okta.com/docs/reference/api/groups/#list-groups
     """
-    return session.get(f'{url}/api/v1/groups', params=kwargs, headers=headers)
+    return session.get(f'{url}/api/v1/groups', params=params, headers=headers)
 
 def get_group(id):
     return session.get(f'{url}/api/v1/groups/{id}', headers=headers)
@@ -69,35 +69,35 @@ def add_group_member(groupid, userid):
 def get_mapping(id):
     return session.get(f'{url}/api/v1/mappings/{id}', headers=headers)
 
-def get_mappings(**kwargs):
-    return session.get(f'{url}/api/v1/mappings', params=kwargs, headers=headers)
+def get_mappings(**params):
+    return session.get(f'{url}/api/v1/mappings', params=params, headers=headers)
 
 
 # Users - https://developer.okta.com/docs/reference/api/users
 def get_user(id):
     return session.get(f'{url}/api/v1/users/{id}', headers=headers)
 
-def get_users(**kwargs):
+def get_users(**params):
     """Get Okta users.
     
-    **kwargs: such as `q`, `filter`, `search`, `limit`, etc. 
+    **params: such as `q`, `filter`, `search`, `limit`, etc. 
     
     see https://developer.okta.com/docs/reference/api/users/#list-users
     """
-    return session.get(f'{url}/api/v1/users', params=kwargs, headers=headers)
+    return session.get(f'{url}/api/v1/users', params=params, headers=headers)
 
-def get_user_pages(**kwargs):
-    page = get_users(**kwargs) 
+def get_user_pages(**params):
+    page = get_users(**params) 
     while page:
         yield page
         page = get_next_page(page.links)    
 
 
 # Util
-def get_next_page(links, **kwargs):
+def get_next_page(links, **params):
     next = links.get('next')
     if next:
-        return session.get(next['url'], params=kwargs, headers=headers)
+        return session.get(next['url'], params=params, headers=headers)
     else:
         return None
 
