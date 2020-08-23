@@ -11,6 +11,9 @@ headers = {
     'Accept': 'application/json'
 }
 
+session = requests.Session()
+session.headers.update(headers)
+
 names = ['Finance', 'Legal']
 for name in names:
     group = {
@@ -19,5 +22,5 @@ for name in names:
             'description': ''
         }
     }
-    res = requests.post(f'{url}/api/v1/groups', json=group, headers=headers)
+    res = session.post(f'{url}/api/v1/groups', json=group)
     print(res.ok)
