@@ -18,10 +18,11 @@ headers = {
 }
 
 session = requests.Session()
+session.headers.update(headers)
 
 # Apps - https://developer.okta.com/docs/reference/api/apps
 def get_apps(**params):
-    return session.get(f'{url}/api/v1/apps', params=params, headers=headers)
+    return session.get(f'{url}/api/v1/apps', params=params)
 
 def get_app_pages(**params):
     page = get_apps(**params) 
@@ -30,10 +31,10 @@ def get_app_pages(**params):
         page = get_next_page(page.links)    
 
 def get_app_schema(id):
-    return session.get(f'{url}/api/v1/meta/schemas/apps/{id}/default', headers=headers)
+    return session.get(f'{url}/api/v1/meta/schemas/apps/{id}/default')
 
 def get_app_groups(id, **params):
-    return session.get(f'{url}/api/v1/apps/{id}/groups', params=params, headers=headers)
+    return session.get(f'{url}/api/v1/apps/{id}/groups', params=params)
 
 def get_app_group_pages(id, **params):
     page = get_app_groups(id, **params) 
@@ -44,7 +45,7 @@ def get_app_group_pages(id, **params):
 
 # Groups - https://developer.okta.com/docs/reference/api/groups
 def new_group(group):
-    return session.post(f'{url}/api/v1/groups', json=group, headers=headers)
+    return session.post(f'{url}/api/v1/groups', json=group)
 
 def get_groups(**params):
     """Get Okta groups.
@@ -53,29 +54,29 @@ def get_groups(**params):
     
     see https://developer.okta.com/docs/reference/api/groups/#list-groups
     """
-    return session.get(f'{url}/api/v1/groups', params=params, headers=headers)
+    return session.get(f'{url}/api/v1/groups', params=params)
 
 def get_group(id):
-    return session.get(f'{url}/api/v1/groups/{id}', headers=headers)
+    return session.get(f'{url}/api/v1/groups/{id}')
 
 def delete_group(id):
-    return session.delete(f'{url}/api/v1/groups/{id}', headers=headers)
+    return session.delete(f'{url}/api/v1/groups/{id}')
 
 def add_group_member(groupid, userid):
-    return session.put(f'{url}/api/v1/groups/{groupid}/users/{userid}', headers=headers)
+    return session.put(f'{url}/api/v1/groups/{groupid}/users/{userid}')
 
 
 # Mappings - https://developer.okta.com/docs/reference/api/mappings
 def get_mapping(id):
-    return session.get(f'{url}/api/v1/mappings/{id}', headers=headers)
+    return session.get(f'{url}/api/v1/mappings/{id}')
 
 def get_mappings(**params):
-    return session.get(f'{url}/api/v1/mappings', params=params, headers=headers)
+    return session.get(f'{url}/api/v1/mappings', params=params)
 
 
 # Users - https://developer.okta.com/docs/reference/api/users
 def get_user(id):
-    return session.get(f'{url}/api/v1/users/{id}', headers=headers)
+    return session.get(f'{url}/api/v1/users/{id}')
 
 def get_users(**params):
     """Get Okta users.
@@ -84,7 +85,7 @@ def get_users(**params):
     
     see https://developer.okta.com/docs/reference/api/users/#list-users
     """
-    return session.get(f'{url}/api/v1/users', params=params, headers=headers)
+    return session.get(f'{url}/api/v1/users', params=params)
 
 def get_user_pages(**params):
     page = get_users(**params) 
@@ -97,7 +98,7 @@ def get_user_pages(**params):
 def get_next_page(links, **params):
     next = links.get('next')
     if next:
-        return session.get(next['url'], params=params, headers=headers)
+        return session.get(next['url'], params=params)
     else:
         return None
 
