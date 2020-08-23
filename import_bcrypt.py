@@ -20,7 +20,7 @@ def encode_bcrypt(password):
     }
 
 username = 'bcryptpy8@okta.local'
-password = 'Password123'
+password = 'P@ssword123'
 
 hash = encode_bcrypt(password.encode())
 print('bcrypt hash', hash)
@@ -31,7 +31,7 @@ url = os.getenv('OKTA_ORG_URL')
 token = os.getenv('OKTA_API_TOKEN')
 
 headers = {
-    'Authorization': 'SSWS ' + token,
+    'Authorization': f'SSWS {token}',
     'Accept': 'application/json'
 }
 
@@ -50,11 +50,11 @@ user = {
 }
 
 # Create the user.
-response = requests.post(url + '/api/v1/users', json=user, headers=headers)
+response = requests.post(f'{url}/api/v1/users', json=user, headers=headers)
 print(response.json())
 
 # Now, sign in as the user to verify the password hash was imported correctly.
-response = requests.post(url + '/api/v1/authn', json={'username': username, 'password': password})
+response = requests.post(f'{url}/api/v1/authn', json={'username': username, 'password': password})
 authn = response.json()
 if response.ok:
     print(authn['status'])
