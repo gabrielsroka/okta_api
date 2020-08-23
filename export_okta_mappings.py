@@ -15,6 +15,9 @@ headers = {
     'Accept': 'application/json'
 }
 
+session = requests.Session()
+session.headers.update(headers)
+
 def main():
     mappings = []
     pages = 0
@@ -36,15 +39,15 @@ def get_mapping_pages(**kwargs):
         page = get_next_page(page.links)  
 
 def get_mapping(id):
-    return requests.get(f'{url}/api/v1/mappings/{id}', headers=headers)
+    return session.get(f'{url}/api/v1/mappings/{id}')
 
 def get_mappings(**kwargs):
-    return requests.get(f'{url}/api/v1/mappings', params=kwargs, headers=headers)
+    return session.get(f'{url}/api/v1/mappings', params=kwargs)
 
 def get_next_page(links):
     next = links.get('next')
     if next:
-        return requests.get(next['url'], headers=headers)
+        return session.get(next['url'])
     else:
         return None
 
