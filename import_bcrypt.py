@@ -1,4 +1,7 @@
-"""Import a user with salted bcrypt hash into Okta."""
+"""Import a user with salted bcrypt hash into Okta.
+
+https://www.usenix.org/legacy/event/usenix99/provos/provos.pdf
+"""
 
 import bcrypt
 import requests
