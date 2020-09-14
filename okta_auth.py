@@ -69,14 +69,18 @@ def send_push(factors, state_token):
 
 def admin_sign_in():
     response = session.get(f'{okta_url}/home/admin-entry')
+
+    # old stlye
     match = re.search(r'"token":\["(.*)"\]', response.text)
+    if match:
+        body = {'token': match.group(1)}
+        response = session.post(f'{okta_admin_url}/admin/sso/request', data=body)
+
+    # new style (w/ new OIDC flow)
+    match = re.search(r'<span.* id="_xsrfToken">(.*)</span>', response.text)
     if not match:
         print('admin_sign_in: token not found. Go to Security > General and disable Multifactor for Administrators.')
         exit()
-    body = {'token': match.group(1)}
-    
-    response = session.post(f'{okta_admin_url}/admin/sso/request', data=body)
-    match = re.search(r'<span.* id="_xsrfToken">(.*)</span>', response.text)
     admin_xsrf_token = match.group(1)
     return admin_xsrf_token
 
