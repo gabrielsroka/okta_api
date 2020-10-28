@@ -10,6 +10,7 @@ import time
 load_dotenv()
 # Store these in a local .env file.
 url = os.getenv('OKTA_ORG_URL')
+admin_url = url.replace('.', '-admin.', 1)
 token = os.getenv('OKTA_API_TOKEN')
 
 headers = {
@@ -40,7 +41,18 @@ def get_app_group_pages(id, **params):
     page = get_app_groups(id, **params) 
     while page:
         yield page
-        page = get_next_page(page.links, **params)    
+        page = get_next_page(page.links, **params)
+
+def get_app_group_push(id):
+    return session.get(f'{admin_url}/api/internal/instance/{id}/grouppush')
+
+
+# Factors - https://developer.okta.com/docs/reference/api/factors
+def get_user_factors(id):
+    return session.get(f'{url}/api/v1/users/{id}/factors')
+
+def issue_user_factor_challenge(userid, factorid):
+    return session.post(f'{url}/api/v1/users/{userid}/factors/{factorid}/verify')
 
 
 # Groups - https://developer.okta.com/docs/reference/api/groups
