@@ -61,7 +61,7 @@ def send_push(factors, state_token):
             return authn['sessionToken']
         result = authn['factorResult']
         if result == 'WAITING':
-            time.sleep(4)
+            time.sleep(4) # 4 seconds
             print('Waiting...')
         elif result in ['REJECTED', 'TIMEOUT']:
             print('Push rejected')
