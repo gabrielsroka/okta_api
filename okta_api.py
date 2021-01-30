@@ -13,15 +13,20 @@ url = os.getenv('OKTA_ORG_URL')
 admin_url = url.replace('.', '-admin.', 1)
 token = os.getenv('OKTA_API_TOKEN')
 
-headers = {
-    'Authorization': f'SSWS {token}',
-    'Accept': 'application/json'
-}
 
 session = requests.Session()
+headers = {
+    'Authorization': f'SSWS {token}',
+    'Accept': 'application/json',
+    'User-Agent': session.headers['user-agent'] + ' ' + os.path.basename(__file__)
+}
 session.headers.update(headers)
 
+
 # Apps - https://developer.okta.com/docs/reference/api/apps
+def get_app(id):
+    return session.get(f'{url}/api/v1/apps/{id}')
+
 def get_apps(**params):
     return session.get(f'{url}/api/v1/apps', params=params)
 
@@ -30,6 +35,9 @@ def get_app_pages(**params):
     while page:
         yield page
         page = get_next_page(page.links)    
+
+def update_app(id, app):
+    return session.put(f'{url}/api/v1/apps/{id}', json=app)
 
 def get_app_schema(id):
     return session.get(f'{url}/api/v1/meta/schemas/apps/{id}/default')
