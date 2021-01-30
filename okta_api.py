@@ -1,7 +1,7 @@
 """Call Okta API. See https://developer.okta.com/docs/reference"""
 
 import requests
-from dotenv import load_dotenv
+from dotenv import load_dotenv # pip install python-dotenv
 import os
 import csv
 from datetime import datetime
