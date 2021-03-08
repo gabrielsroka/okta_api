@@ -3,7 +3,7 @@
 ### CAUTION: Code to call private APIs is not supported by Okta. The APIs can change at any time.
 ###          Test in a dev or oktapreview tenant before trying this in production.
 
-This will work with users who have Push MFA. This won't work if Security > General > "MFA for Admins" is enabled.
+This will work with users who have Push MFA. This won't work if Apps > Apps > "Okta Admin Console" > Sign On Policy > MFA is enabled.
 """
 
 import requests
@@ -79,7 +79,7 @@ def admin_sign_in():
     # new style (w/ new OIDC flow)
     match = re.search(r'<span.* id="_xsrfToken">(.*)</span>', response.text)
     if not match:
-        print('admin_sign_in: token not found. Go to Security > General and disable Multifactor for Administrators.')
+        print('admin_sign_in: token not found. Go to Apps > Apps > "Okta Admin Console" > Sign On Policy and disable MFA.')
         exit()
     admin_xsrf_token = match.group(1)
     return admin_xsrf_token
