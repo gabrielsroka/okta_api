@@ -20,6 +20,7 @@ username = os.getenv('OKTA_USERNAME')
 
 okta_admin_url = okta_url.replace('.', '-admin.', 1)
 
+# A session uses cookies and reuses the HTTP connection.
 session = requests.Session()
 
 def main():
