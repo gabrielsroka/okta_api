@@ -79,6 +79,9 @@ def get_groups(**params):
 def get_group(id):
     return session.get(f'{url}/api/v1/groups/{id}')
 
+def update_group(id, group):
+    return session.put(f'{url}/api/v1/groups/{id}', json=group)
+
 def delete_group(id):
     return session.delete(f'{url}/api/v1/groups/{id}')
 
