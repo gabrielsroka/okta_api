@@ -9,5 +9,5 @@ pip install python-dotenv
 
 cat > .env
 OKTA_ORG_URL=https://XXX.okta.com
-OKTA_API_TOKEN=
+OKTA_API_TOKEN=XXX
 ```
