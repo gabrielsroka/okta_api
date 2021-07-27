@@ -1,5 +1,12 @@
 import okta_api
 
+def update_groups():
+    groups = okta_api.get_groups(q='a api group').json()
+    for group in groups:
+        print(group['profile']['name'], group['profile']['description'])
+        group['profile']['description'] = 'new desc'
+        okta_api.update_group(group['id'], group)
+
 def new_okta_group():
     group = {'profile': {'name': 'aa python group'}} # ...
     okta_api.new_group(group)
