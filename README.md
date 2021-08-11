@@ -3,11 +3,13 @@ Call Okta API from Python (unofficial, see https://github.com/okta/okta-sdk-pyth
 
 Requires Python 3.6 or greater.
 
+### Local Setup
+Install dependencies
 ```sh
-pip install requests # or pip3
-pip install python-dotenv
-
-cat > .env
-OKTA_ORG_URL=https://XXX.okta.com
-OKTA_API_TOKEN=XXX
+pip install -r requirements.txt
 ```
+Copy the sample env file
+```
+mv .env_template .env
+```
+Edit the .env file substituting your own values
