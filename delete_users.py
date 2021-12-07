@@ -4,7 +4,7 @@ import asyncio
 async def main():
     client = OktaClient()
     query_params = {'filter': 'status eq "SUSPENDED"'} # SUSPENDED, DEPROVISIONED, etc. see https://developer.okta.com/docs/reference/api/users/#user-properties
-    users, resp, err = await client.list_users(query_params=query_params)
+    users, resp, err = await client.list_users(query_params)
     while users:
         for user in users:
             print(user.profile.login, user.status) # Add more properties here.
