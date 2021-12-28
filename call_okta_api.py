@@ -69,22 +69,22 @@ def get_apps_and_groups():
 #     keys = ['id', 'profile.login','profile.email']
 #     users = []
 #     for page in okta_api.get_user_pages(filter='profile.lastName eq "Doe"', limit=2):
-#         users.extend(pluck(page.json(), keys))
+#         users.extend(pluck(page.json(), keys)) # [{key: reduce(lambda v, k: v[k], key.split('.'), user) for key in keys} for user in users]
 #         print('Total users found:', len(users))
 
 #     if users:
 #         okta_api.export_csv('users.csv', users, keys)
 
-# def pluck(list, keys):
+# def pluck(items, keys):
 #     new_list = []
-#     for item in list:
-#         new_item = {}
+#     for item in items:
+#         d = {}
 #         for key in keys:
-#             d = item
+#             v = item
 #             for k in key.split('.'):
-#                 d = d[k]
-#             new_item[key] = d
-#         new_list.append(new_item)
+#                 v = v[k]
+#             d[key] = v
+#         new_list.append(d)
 #     return new_list
 
 # main()
