@@ -69,7 +69,7 @@ def get_apps_and_groups():
 #     keys = ['id', 'profile.login','profile.email']
 #     users = []
 #     for page in okta_api.get_user_pages(filter='profile.lastName eq "Doe"', limit=2):
-#         users.extend(pluck(page.json(), keys)) # [{key: reduce(lambda v, k: v[k], key.split('.'), user) for key in keys} for user in users]
+#         users.extend(pluck(page.json(), keys)) # [{key: reduce(getitem, key.split('.'), user) for key in keys} for user in users]
 #         print('Total users found:', len(users))
 
 #     if users:
