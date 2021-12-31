@@ -4,6 +4,10 @@ import re
 
 _headers = {}
 
+def set_headers(headers):
+    global _headers
+    _headers = headers
+
 def get(url, json=None, headers={}, method='GET'):
     headers = headers or _headers
     if json:
