@@ -9,13 +9,13 @@ def set_headers(headers):
     _headers = headers
 
 def get(url, json=None, headers={}, method='GET'):
-    headers = headers or _headers
+    headers = headers or _headers.copy()
     if json:
         data = json_.dumps(json, separators=(',', ':')).encode()
         headers['Content-Type'] = 'application/json'
     else:
         data = None
-    req = urllib.request.Request(url, data, headers=headers, method=method)
+    req = urllib.request.Request(url, data, headers, method=method)
     with urllib.request.urlopen(req) as res:
         if res.reason != 'No Content': # (204), TODO: add more reasons/statuses?
             res.json = json_.load(res)
