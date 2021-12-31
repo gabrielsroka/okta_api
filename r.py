@@ -20,7 +20,7 @@ def get(url, json=None, headers={}, method='GET'):
     req = urllib.request.Request(url, data, headers, method=method)
     with urllib.request.urlopen(req) as res:
         if res.reason != 'No Content': # (204), TODO: add more reasons/statuses?
-            fp = gzip.open(res) if res.headers.get('Content-Encoding') == 'gzip' else res
+            fp = gzip.open(res) if res.headers['Content-Encoding'] == 'gzip' else res
             res.json = json_.load(fp)
     links = [link for link in res.headers.get_all('link') or [] if 'rel="next"' in link]
     res.next_url = re.search('<(.*)>', links[0]).group(1) if links else None
