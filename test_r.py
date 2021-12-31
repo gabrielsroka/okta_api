@@ -5,10 +5,10 @@ token = '...'
 
 group_id = '...'
 
-r._headers = {
+r.set_headers({
     'Authorization': f'SSWS {token}',
     'Accept': 'application/json'
-}
+})
 
 res = r.get(f'{base_url}/api/v1/users/me')
 me = res.json
