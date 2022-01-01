@@ -10,6 +10,9 @@ def set_headers(headers):
     _headers = headers
     _headers['Accept-Encoding'] = 'gzip'
 
+def url(url, **kwargs):
+    return url + '?' + urllib.parse.urlencode(kwargs)
+
 def get(url, json=None, headers={}, method='GET'):
     """Returns HTTPResponse object (including res.reason, res.status, res.headers) and also res.json, res.next_url."""
     headers = headers or _headers.copy()
