@@ -11,6 +11,7 @@ def set_headers(headers):
     _headers['Accept-Encoding'] = 'gzip'
 
 def get(url, json=None, headers={}, method='GET'):
+    """Returns HTTPResponse object (including res.reason, res.status, res.headers) and also res.json, res.next_url."""
     headers = headers or _headers.copy()
     if json:
         data = json_.dumps(json, separators=(',', ':')).encode()
@@ -25,7 +26,6 @@ def get(url, json=None, headers={}, method='GET'):
     links = [link for link in res.headers.get_all('link') or [] if 'rel="next"' in link]
     res.next_url = re.search('<(.*)>', links[0]).group(1) if links else None
     return res
-    # print(res.reason, res.status, res.headers)
 
 def post(url, json=None, headers={}):
     return get(url, json, headers, 'POST')
