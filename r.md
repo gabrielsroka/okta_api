@@ -35,7 +35,7 @@ with urllib.request.urlopen('https://pypi.org/pypi/sampleproject/json') as res:
 and i thought: "hey, that doesn't look too hard" and wondered if i should give `urllib` a second look. so i did.
 
 i wrote a mini-`requests` lib called `r` using `urllib`. it handles json, gzip and link headers.
-it does almost everything i need except for connection-keep-alive (not supported by `urllib`) and some url stuff (coming soon&trade;).
+it does almost everything i need except for connection-keep-alive (not supported by `urllib`) ~~and some url stuff (coming soon&trade;)~~.
 the bulk of it is about 15 LOC. https://github.com/gabrielsroka/okta_api/blob/master/r.py
 
 and here's a small test/demo suite: https://github.com/gabrielsroka/okta_api/blob/master/test_r.py
