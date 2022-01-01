@@ -16,7 +16,7 @@ user_id = me['id']
 print(me['profile']['login'], me['profile']['title'], res.headers['x-rate-limit-remaining'])
 
 # Pagination
-url = f'{base_url}/api/v1/users?filter=profile.lastName+eq+%22Doe%22&limit=2'
+url = r.url(f'{base_url}/api/v1/users', filter='profile.lastName eq "Doe"', limit=2)
 while url:
     res = r.get(url)
     print(len(res.json), url, res.headers['x-rate-limit-remaining'])
