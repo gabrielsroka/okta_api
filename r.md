@@ -4,8 +4,8 @@ https://docs.python.org/3/library/urllib.request.html and it said
 
 so i decided to try `requests` instead.
 
-the `requests` page links to a [gist](https://gist.github.com/kennethreitz/973705) written by Kenneth Reitz
-that makes `urllib` seem *sooo* complicated (and `requests` *sooo* much easier)
+the `requests` page links to a [gist](https://gist.github.com/kennethreitz/973705) 
+that makes `urllib` seem very complicated (and `requests` so much easier)
 ```python
 import urllib2
 
