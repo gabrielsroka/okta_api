@@ -4,8 +4,7 @@ https://docs.python.org/3/library/urllib.request.html and it said
 
 so i decided to try `requests` instead.
 
-the `requests` page links to a [gist](https://gist.github.com/kennethreitz/973705) 
-that makes `urllib` seem very complicated (and `requests` so much easier)
+the `requests` page links to a [gist](https://gist.github.com/kennethreitz/973705) that makes `urllib` seem very complicated (and `requests` so much easier)
 ```python
 import urllib2
 
@@ -28,20 +27,21 @@ so i learned `requests`, forgot about `urllib`, and that was the end of that. or
 
 a few days ago, i was reading about `pprint` and there was an [example](https://docs.python.org/3/library/pprint.html#example) using `urllib` (slightly edited)
 ```python
-with urllib.request.urlopen('https://pypi.org/pypi/sampleproject/json') as res:
+with urlopen('https://pypi.org/pypi/sampleproject/json') as res:
     project = json.load(res)
 ```
 
 and i thought: "hey, that doesn't look too hard" and wondered if i should give `urllib` a second look. so i did.
 
-i wrote a mini-`requests` lib called `r` using `urllib`. it handles json, gzip and link headers.
+i wrote a mini `requests` lib called `r` using `urllib`. it handles json, gzip and link headers.
 it does almost everything i need except for connection-keep-alive (which is not supported by `urllib`) ~~and some url stuff (coming soon&trade;)~~.
-https://github.com/gabrielsroka/okta_api/blob/master/r.py
 
-and here's a small test/demo suite: https://github.com/gabrielsroka/okta_api/blob/master/test_r.py
+[source](https://github.com/gabrielsroka/okta_api/blob/master/r.py)
+
+and here's a small [test/demo suite](https://github.com/gabrielsroka/okta_api/blob/master/test_r.py)
 
 the bulk of `r` is about 15 LOC. by contrast `requests` is 4,000 LOC, and it uses `urllib3` (which is different than `urllib`) and other libraries as well (http://line-count.herokuapp.com/)
 
 am i saying 15 LOC does everything that 4,000 LOC does? of course not!
 
-spending a few hours researching/writing `r` helped me understand and appreciate `requests`.
+spending a few hours learning `urllib` and other libraries, and writing `r` helped me understand and appreciate `requests`.
