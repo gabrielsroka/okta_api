@@ -36,12 +36,12 @@ and i thought: "hey, that doesn't look too hard" and wondered if i should give `
 
 i wrote a mini-`requests` lib called `r` using `urllib`. it handles json, gzip and link headers.
 it does almost everything i need except for connection-keep-alive (not supported by `urllib`) ~~and some url stuff (coming soon&trade;)~~.
-the bulk of it is about 15 LOC. https://github.com/gabrielsroka/okta_api/blob/master/r.py
+https://github.com/gabrielsroka/okta_api/blob/master/r.py
 
 and here's a small test/demo suite: https://github.com/gabrielsroka/okta_api/blob/master/test_r.py
 
-by contrast `requests` is 7,000-10,000 LOC, and it uses `urllib3` (which is different than `urllib`) which is 20,000-25,000 LOC (http://line-count.herokuapp.com/)
+the bulk of `r` is about 15 LOC. by contrast `requests` is 4,000-8,000 LOC, and it uses `urllib3` (which is different than `urllib`) and other libraries as well (http://line-count.herokuapp.com/)
 
-am i saying 15 LOC does everything that 27,000-35,000 LOC does? of course not! or am i?
+am i saying 15 LOC does everything that 4,000-8,000 LOC does? of course not!
 
 spending a few hours researching/writing `r` helped me understand and appreciate `requests`.
