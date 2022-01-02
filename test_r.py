@@ -1,12 +1,15 @@
 import r
+import json
 
 # Set these:
-base_url = '...'
-token = '...'
+with open('okta.yaml') as f: # in JSON format: {"okta":{"client":{"orgUrl":"...","token":"..."}}}
+    config = json.load(f)['okta']['client']
+    base_url = config['orgUrl'] # eg 'https://gsroka.oktapreview.com'
+
 group_id = '...'
 
 r.set_headers({
-    'Authorization': f'SSWS {token}',
+    'Authorization': 'SSWS ' + config['token'],
     'Accept': 'application/json'
 })
 
@@ -15,7 +18,7 @@ me = res.json
 user_id = me['id']
 print(me['profile']['login'], me['profile']['title'], res.headers['x-rate-limit-remaining'])
 
-# Pagination
+# Pagination.
 url = r.url(f'{base_url}/api/v1/users', filter='profile.lastName eq "Doe"', limit=2)
 while url:
     res = r.get(url)
