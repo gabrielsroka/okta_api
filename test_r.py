@@ -8,7 +8,7 @@ with open('okta.yaml') as f: # in JSON format: {"okta":{"client":{"orgUrl":"..."
 
 group_id = '...'
 
-r.set_headers({
+r.headers.update({
     'Authorization': 'SSWS ' + config['token'],
     'Accept': 'application/json'
 })
