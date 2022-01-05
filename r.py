@@ -4,25 +4,20 @@ import json as json_
 import gzip
 import re
 
-_headers = {}
-
-def set_headers(headers):
-    global _headers
-    _headers = headers
-    _headers['Accept-Encoding'] = 'gzip'
+headers = {'Accept-Encoding': 'gzip'}
 
 def url(url, **kwargs):
     return url + '?' + urllib.parse.urlencode(kwargs)
 
-def get(url, json=None, headers={}, method='GET'):
-    """Returns HTTPResponse object (including res.reason, res.status, res.headers) and also res.json, res.next_url."""
-    headers = headers or _headers.copy()
+def get(url, json=None, method='GET'):
+    """Returns HTTPResponse object (including res.reason, .status, .headers) and also .json, .next_url."""
+    _headers = headers.copy()
     if json:
         data = json_.dumps(json, separators=(',', ':')).encode()
-        headers['Content-Type'] = 'application/json'
+        _headers['Content-Type'] = 'application/json'
     else:
         data = None
-    req = urllib.request.Request(url, data, headers, method=method)
+    req = urllib.request.Request(url, data, _headers, method=method)
     with urllib.request.urlopen(req) as res:
         if res.reason != 'No Content': # (204), TODO: add more reasons/statuses?
             fp = gzip.open(res) if res.headers['Content-Encoding'] == 'gzip' else res
@@ -31,11 +26,11 @@ def get(url, json=None, headers={}, method='GET'):
     res.next_url = re.search('<(.*)>', links[0]).group(1) if links else None
     return res
 
-def post(url, json=None, headers={}):
-    return get(url, json, headers, 'POST')
+def post(url, json=None):
+    return get(url, json, 'POST')
 
-def put(url, json=None, headers={}):
-    return get(url, json, headers, 'PUT')
+def put(url, json=None):
+    return get(url, json, 'PUT')
 
-def delete(url, json=None, headers={}):
-    return get(url, json, headers, 'DELETE')
+def delete(url):
+    return get(url, None, 'DELETE')
