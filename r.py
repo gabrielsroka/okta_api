@@ -9,7 +9,7 @@ headers = {'Accept-Encoding': 'gzip'}
 def url(url, **kwargs):
     return url + '?' + urllib.parse.urlencode(kwargs)
 
-def get(url, json=None, method='GET'):
+def r(method, url, json=None):
     """Returns HTTPResponse object (including res.reason, .status, .headers) and also .json, .next_url."""
     _headers = headers.copy()
     if json:
@@ -26,11 +26,17 @@ def get(url, json=None, method='GET'):
     res.next_url = re.search('<(.*)>', links[0]).group(1) if links else None
     return res
 
+def get(url):
+    return r('GET', url)
+
 def post(url, json=None):
-    return get(url, json, 'POST')
+    return r('POST', url, json)
 
 def put(url, json=None):
-    return get(url, json, 'PUT')
+    return r('PUT', url, json)
+
+def patch(url, json=None):
+    return r('PATCH', url, json)
 
 def delete(url):
-    return get(url, None, 'DELETE')
+    return r('DELETE', url)
