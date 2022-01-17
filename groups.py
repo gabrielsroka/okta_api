@@ -1,5 +1,10 @@
 import okta_api
 
+def add_users_to_group(filename, groupid):
+    users = okta_api.import_csv(filename)
+    for user in users:
+        okta_api.add_group_member(groupid, user['id'])
+
 def update_groups():
     groups = okta_api.get_groups(q='a api group').json()
     for group in groups:
@@ -45,4 +50,3 @@ def search_okta_groups():
     for group in okta_api.get_groups(q='grp-atlassian').json():
         print(group['id'], group['profile']['name'])
         okta_api.add_group_member(group['id'], userid)
-
