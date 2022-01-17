@@ -22,12 +22,13 @@ def r(method, url, json=None):
         if res.reason != 'No Content': # (204), TODO: add more reasons/statuses?
             fp = gzip.open(res) if res.headers['Content-Encoding'] == 'gzip' else res
             res.json = json_.load(fp)
-    links = [link for link in res.headers.get_all('link') or [] if 'rel="next"' in link]
-    res.next_url = re.search('<(.*)>', links[0]).group(1) if links else None
     return res
 
 def get(url):
-    return r('GET', url)
+    res = r('GET', url)
+    links = [link for link in res.headers.get_all('link') or [] if 'rel="next"' in link]
+    res.next_url = re.search('<(.*)>', links[0]).group(1) if links else None
+    return res 
 
 def post(url, json=None):
     return r('POST', url, json)
