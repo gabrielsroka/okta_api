@@ -26,7 +26,7 @@ def r(method, url, json=None):
 
 def get(url):
     res = r('GET', url)
-    links = [link for link in res.headers.get_all('link') or [] if 'rel="next"' in link]
+    links = [link for link in res.headers.get_all('link', []) if 'rel="next"' in link]
     res.next_url = re.search('<(.*)>', links[0]).group(1) if links else None
     return res 
 
