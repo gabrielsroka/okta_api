@@ -1,7 +1,7 @@
 import okta.client
 import asyncio
 
-limit = 75 # see https://developer.okta.com/docs/reference/rl-additional-limits/#concurrent-rate-limits
+limit = 75 # 15, 35, or 75. see https://developer.okta.com/docs/reference/rl-additional-limits/#concurrent-rate-limits
 
 users = []
 counts = [0] * limit
