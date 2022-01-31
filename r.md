@@ -1,3 +1,5 @@
+moved to https://github.com/gabrielsroka/r
+
 a few years ago, when I was first learning Python and looking for http functionality, i found the batteries-included `urllib` -- part of the Python std lib
 https://docs.python.org/3/library/urllib.request.html and it said
 > The [Requests package](https://requests.readthedocs.io/en/master/) is recommended for a higher-level HTTP client interface.
