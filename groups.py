@@ -3,7 +3,10 @@ import okta_api
 def add_users_to_group(filename, groupid):
     users = okta_api.import_csv(filename)
     for user in users:
-        okta_api.add_group_member(groupid, user['id'])
+        res = okta_api.add_group_member(groupid, user['id'])
+        if not res.ok:
+            error = res.json()
+            print('error:', error['errorSummary'])
 
 def update_groups():
     groups = okta_api.get_groups(q='a api group').json()
