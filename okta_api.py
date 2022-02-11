@@ -13,7 +13,7 @@ url = os.getenv('OKTA_ORG_URL')
 admin_url = url.replace('.', '-admin.', 1)
 token = os.getenv('OKTA_API_TOKEN')
 
-
+# If you're making multiple API calls, using a session is much faster.
 session = requests.Session()
 headers = {
     'Authorization': f'SSWS {token}',
