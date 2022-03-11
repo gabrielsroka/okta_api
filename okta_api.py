@@ -54,8 +54,8 @@ def get_app_group_pages(id, **params):
 def get_app_group_push(id):
     return session.get(f'{admin_url}/api/internal/instance/{id}/grouppush')
 
-def assign_group_to_app(appid, groupid):
-    return session.put(f'{url}/api/v1/apps/{appid}/groups/{groupid}')
+def assign_group_to_app(appid, groupid, group={}):
+    return session.put(f'{url}/api/v1/apps/{appid}/groups/{groupid}', json=group)
 
 
 # Factors - https://developer.okta.com/docs/reference/api/factors
@@ -72,7 +72,6 @@ def new_group(group):
 
 def get_groups(**params):
     """Get Okta groups.
-
     **params: such as `q`, `filter`, `limit`, etc. 
     
     see https://developer.okta.com/docs/reference/api/groups/#list-groups
