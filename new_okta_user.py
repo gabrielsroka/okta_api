@@ -1,5 +1,6 @@
 import requests
 
+# Set these:
 url = '...'
 token = '...'
 
