@@ -7,6 +7,8 @@ headers = {
     'Authorization': f'SSWS {token}',
     'Accept': 'application/json'
 }
+session = requests.Session()
+session.headers.update(headers)
 
 user = {
     'profile': {
@@ -16,5 +18,5 @@ user = {
         'login': 'python@example.com'
     }
 }
-res = requests.post(f'{url}/api/v1/users', json=user, headers=headers)
+res = session.post(f'{url}/api/v1/users', json=user, headers=headers)
 print(res.ok)
