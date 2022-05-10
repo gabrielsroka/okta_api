@@ -10,6 +10,8 @@ headers = {
     'Authorization': f'SSWS {token}',
     'Accept': 'application/json'
 }
+session = requests.Session()
+session.headers.update(headers)
 
 oldGroupId = '00g9raeyraaWXn1zF0h7'
 newGroupId = '00goz2pusnPu0lRCB0h7'
@@ -30,5 +32,5 @@ group_rule = {
         }
     }
 }
-res = requests.post(f'{url}/api/v1/groups/rules', json=group_rule, headers=headers)
+res = session.post(f'{url}/api/v1/groups/rules', json=group_rule)
 print(res.ok)
