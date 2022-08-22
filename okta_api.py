@@ -46,10 +46,22 @@ def get_app_groups(id, **params):
     return session.get(f'{url}/api/v1/apps/{id}/groups', params=params)
 
 def get_app_group_pages(id, **params):
-    page = get_app_groups(id, **params) 
+    page = get_app_groups(id, **params)
     while page:
         yield page
         page = get_next_page(page.links, **params)
+
+def get_app_users(id, **params):
+    return session.get(f'{url}/api/v1/apps/{id}/users', params=params)
+
+def get_app_user_pages(id, **params):
+    page = get_app_users(id, **params)
+    while page:
+        yield page
+        page = get_next_page(page.links, **params)
+
+def update_app_user(app_id, user_id, user):
+    return session.post(f'{url}/api/v1/apps/{app_id}/users/{user_id}', json=user)
 
 def get_app_group_push(id):
     return session.get(f'{admin_url}/api/internal/instance/{id}/grouppush')
