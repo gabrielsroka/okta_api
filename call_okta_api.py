@@ -23,7 +23,7 @@ def export_users():
     # Export to CSV.
     print('Getting users.')
     users = []
-    for page in okta_api.get_user_pages(filter='profile.lastName eq "Doe"'): # limit=2
+    for page in okta_api.get_user_pages(): # filter='profile.lastName eq "Doe"', limit=2
         for user in page.json():
             users.append({
                 'id': user['id'], 
@@ -68,7 +68,7 @@ def get_apps_and_groups():
 #     print('Getting users.')
 #     keys = ['id', 'profile.login','profile.email']
 #     users = []
-#     for page in okta_api.get_user_pages(filter='profile.lastName eq "Doe"', limit=2):
+#     for page in okta_api.get_user_pages(): # filter='profile.lastName eq "Doe"', limit=2
 #         users.extend(pluck(page.json(), keys)) # [{key: reduce(getitem, key.split('.'), user) for key in keys} for user in users]
 #         print('Total users found:', len(users))
 
@@ -92,7 +92,7 @@ def get_apps_and_groups():
 
 # old style
 
-# page = okta_api.get_users(limit=2, filter='profile.lastName eq "Doe"')
+# page = okta_api.get_users() # limit=2, filter='profile.lastName eq "Doe"'
 # while page:
 #     for user in page.json():
 #         print(user['id'], user['profile']['login'])
