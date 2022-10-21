@@ -1,0 +1,93 @@
+#!/usr/bin/python3
+
+"""Export Okta groups, apps, and app groups to csv."""
+
+import requests
+import csv
+import os
+from datetime import datetime
+import time
+
+
+# Set these:
+url = 'https://ORG.okta.com'
+token = os.environ['okta_api_token']
+LIMIT_REMAINING = 10
+
+headers = {
+    'Authorization': f'SSWS {token}',
+    'Accept': 'application/json'
+}
+
+session = requests.Session()
+session.headers.update(headers)
+
+def get_objects(url):
+    while url:
+        res = session.get(url)
+        for o in res.json():
+            yield o
+        snooze(res)
+        url = res.links.get('next', {}).get('url')
+
+def snooze(response):
+    remaining = int(response.headers['X-Rate-Limit-Remaining'])
+    limit = int(response.headers['X-Rate-Limit-Limit'])
+    if remaining <= LIMIT_REMAINING:
+        reset = datetime.utcfromtimestamp(int(response.headers['X-Rate-Limit-Reset']))
+        print('sleeping...', remaining, limit, reset)
+        while reset > datetime.utcnow():
+            time.sleep(1)
+
+def export_csv(filename, rows, fieldnames):
+    with open(filename, 'w', newline='') as f:
+        writer = csv.DictWriter(f, fieldnames, extrasaction='ignore')
+        writer.writeheader()
+        writer.writerows(rows)
+
+print('fetching groups')
+groups = []
+for group in get_objects(f'{url}/api/v1/groups'):
+    groups.append({
+        'id':  group['id'],
+        'name': group['profile']['name'],
+        'description': group['profile']['description']
+    })
+export_csv('groups.csv', groups, groups[0].keys())
+
+print('fetching apps and app groups')
+apps = []
+app_groups = []
+for app in get_objects(f'{url}/api/v1/apps'):
+    for app_group in get_objects(f"{url}/api/v1/apps/{app['id']}/groups"):
+        app_groups.append({
+            'app_id': app['id'],
+            'group_id': app_group['id']
+        })
+    apps.append({
+        'id': app['id'],
+        'label': app['label']
+    })
+export_csv('apps.csv', apps, apps[0].keys())
+export_csv('app_groups.csv', app_groups, app_groups[0].keys())
+
+
+"""
+$ sqlite3 -csv -header okta.db
+-- import csv (only need to do this one time)
+.import apps.csv apps
+.import groups.csv groups
+.import app_groups.csv app_groups
+
+-- send output of next query to csv
+.once results.csv
+
+-- or, to excel
+.excel
+
+-- query
+select apps.label app_label, groups.name group_name, groups.description group_desc
+from apps inner join app_groups on apps.id = app_groups.app_id
+inner join groups on groups.id = app_groups.group_id
+where apps.label like 'logfood%';
+"""
