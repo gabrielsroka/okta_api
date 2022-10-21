@@ -2,7 +2,7 @@
 
 """
 Export Okta groups, apps, and app groups to csv.
-https://github.com/gabrielsroka/okta_api/edit/master/okta_to_csv.py
+https://github.com/gabrielsroka/okta_api/blob/master/okta_to_csv.py
 
 1. run the Python to export Okta to csv files
 2. run the SQLite commands using the sqlite3 CLI [0] to create the db, import the csv files, run the query, and create output csv
