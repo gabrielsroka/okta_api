@@ -1,13 +1,40 @@
 #!/usr/bin/python3
 
-"""Export Okta groups, apps, and app groups to csv."""
+"""
+Export Okta groups, apps, and app groups to csv.
+
+1. run the Python to export Okta to csv files
+2. run the SQLite commands using the sqlite3 CLI [0] to create the db, import the csv files, run the query, and create output csv
+
+$ sqlite3 -csv -header okta.db
+-- import csv files (only need to do this one time)
+.import apps.csv apps
+.import groups.csv groups
+.import app_groups.csv app_groups
+
+-- send output of next query to csv
+.once results.csv
+
+-- or, to excel
+.excel
+
+-- query
+select apps.label app_label, groups.name group_name, groups.description group_desc
+from apps inner join app_groups on apps.id = app_groups.app_id
+inner join groups on groups.id = app_groups.group_id
+where apps.label like 'logfood%';
+
+
+[0] DL CLI: https://www.sqlite.org/download.html
+CLI docs: https://www.sqlite.org/cli.html
+Python sqlite: https://docs.python.org/3/library/sqlite3.html
+"""
 
 import requests
 import csv
 import os
 from datetime import datetime
 import time
-
 
 # Set these:
 url = 'https://ORG.okta.com'
@@ -70,24 +97,3 @@ for app in get_objects(f'{url}/api/v1/apps'):
     })
 export_csv('apps.csv', apps, apps[0].keys())
 export_csv('app_groups.csv', app_groups, app_groups[0].keys())
-
-
-"""
-$ sqlite3 -csv -header okta.db
--- import csv (only need to do this one time)
-.import apps.csv apps
-.import groups.csv groups
-.import app_groups.csv app_groups
-
--- send output of next query to csv
-.once results.csv
-
--- or, to excel
-.excel
-
--- query
-select apps.label app_label, groups.name group_name, groups.description group_desc
-from apps inner join app_groups on apps.id = app_groups.app_id
-inner join groups on groups.id = app_groups.group_id
-where apps.label like 'logfood%';
-"""
