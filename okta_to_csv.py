@@ -2,6 +2,7 @@
 
 """
 Export Okta groups, apps, and app groups to csv.
+https://github.com/gabrielsroka/okta_api/edit/master/okta_to_csv.py
 
 1. run the Python to export Okta to csv files
 2. run the SQLite commands using the sqlite3 CLI [0] to create the db, import the csv files, run the query, and create output csv
@@ -85,7 +86,7 @@ export_csv('groups.csv', groups, groups[0].keys())
 print('fetching apps and app groups')
 apps = []
 app_groups = []
-for app in get_objects(f'{url}/api/v1/apps'):
+for app in get_objects(f'{url}/api/v1/apps'): # ?q=logfood&limit=200
     for app_group in get_objects(f"{url}/api/v1/apps/{app['id']}/groups"):
         app_groups.append({
             'app_id': app['id'],
