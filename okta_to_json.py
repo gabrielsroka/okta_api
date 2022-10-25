@@ -9,17 +9,26 @@ from datetime import datetime
 import time
 
 # Set these:
-url = 'https://ORG.okta.com'
-token = os.environ.get('okta_api_token')
+url = os.environ['OKTA_ORG_URL'] # eg 'https://ORG.okta.com'
+token = os.environ['okta_api_token']
 LIMIT_REMAINING = 10
 
-headers = {
-    'Authorization': f'SSWS {token}',
-    'Accept': 'application/json'
-}
+def fetch(url, name):
+    print('fetching ' + name)
+    with open(name + '.json', 'w') as f:
+        for o in get_objects(url):
+            print(to_json(o), file=f)
 
-session = requests.Session()
-session.headers.update(headers)
+def fetch_sub(url, name, sub):
+    print('fetching ' + name + ' and ' + sub)
+    with open(name + '.json', 'w') as f, open(name[:-1] + '_' + sub + '.json', 'w') as fs:
+        for o in get_objects(url):
+            urls = o['_links'][sub]['href']
+            print(to_json(o), file=f)
+            for os in get_objects(urls):
+                os[sub[:-1] + '_id'] = os.pop('id')
+                os[name[:-1] + '_id'] = o['id']
+                print(to_json(os), file=fs)
 
 def get_objects(url):
     while url:
@@ -31,22 +40,27 @@ def get_objects(url):
 
 def snooze(response):
     remaining = int(response.headers['X-Rate-Limit-Remaining'])
-    limit = int(response.headers['X-Rate-Limit-Limit'])
     if remaining <= LIMIT_REMAINING:
+        limit = int(response.headers['X-Rate-Limit-Limit'])
         reset = datetime.utcfromtimestamp(int(response.headers['X-Rate-Limit-Reset']))
         print('sleeping...', remaining, limit, reset)
         while reset > datetime.utcnow():
             time.sleep(1)
 
-def fetch(url, name):
-    print('fetching ' + name)
-    with open(name + '.json', 'w') as f:
-        for o in get_objects(url):
-            del o['_links']
-            print(json.dumps(o, separators=(',', ':')), file=f)
+def to_json(o):
+    del o['_links']
+    return json.dumps(o, separators=(',', ':'))
+
+headers = {
+    'Authorization': f'SSWS {token}',
+    'Accept': 'application/json'
+}
+
+session = requests.Session()
+session.headers.update(headers)
 
 fetch(f'{url}/api/v1/groups', 'groups')
-fetch(f'{url}/api/v1/apps?limit=200', 'apps')
+fetch_sub(f'{url}/api/v1/apps?limit=200', 'apps', 'groups')
 
 
 """
