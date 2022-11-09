@@ -8,14 +8,14 @@ def test_push():
     if not push_factors:
         print('Push factor not found')
         return
-    resp = okta_api.issue_user_factor_challenge(user_id, push_factors[0]['id']).json()
+    transaction = okta_api.issue_user_factor_challenge(user_id, push_factors[0]['id']).json()
     print('Sent push')
     while True:
-        result = resp['factorResult']
+        result = transaction['factorResult']
         print(result)
         if result == 'WAITING':
             time.sleep(4) # 4 seconds
-            resp = okta_api.session.get(resp['_links']['poll']['href']).json()
+            transaction = okta_api.session.get(transaction['_links']['poll']['href']).json()
         elif result in ['SUCCESS', 'REJECTED', 'TIMEOUT']:
             return
 
