@@ -1,13 +1,8 @@
 import requests
-from dotenv import load_dotenv
-import os
 
-load_dotenv()
-
-# Store these in a local .env file.
-url = os.getenv('OKTA_ORG_URL')
-token = os.getenv('OKTA_API_TOKEN')
-
+# Set these:
+url = 'https://EXAMPLE.okta.com'
+token = '...'
 filename = 'mappings.json'
 
 headers = {
@@ -32,8 +27,8 @@ def main():
         f.write(',\n'.join(mappings))
         f.write(']')
 
-def get_mapping_pages(**kwargs):
-    page = get_mappings(**kwargs) 
+def get_mapping_pages(**params):
+    page = get_mappings(**params) 
     while page:
         yield page
         page = get_next_page(page.links)  
@@ -41,8 +36,8 @@ def get_mapping_pages(**kwargs):
 def get_mapping(id):
     return session.get(f'{url}/api/v1/mappings/{id}')
 
-def get_mappings(**kwargs):
-    return session.get(f'{url}/api/v1/mappings', params=kwargs)
+def get_mappings(**params):
+    return session.get(f'{url}/api/v1/mappings', params=params)
 
 def get_next_page(links):
     next = links.get('next')
