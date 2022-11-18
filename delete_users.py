@@ -1,19 +1,23 @@
-from okta.client import Client as OktaClient
+import okta.client
 import asyncio
 
+client: okta.client.Client
+
 async def main():
-    async with OktaClient() as client:
-        query_params = {'filter': 'status eq "SUSPENDED"'} # SUSPENDED, DEPROVISIONED, etc. see https://developer.okta.com/docs/reference/api/users/#user-properties
-        users, resp, err = await client.list_users(query_params)
-        while users:
-            for user in users:
-                print(user.profile.login, user.status) # Add more properties here.
-                if user.status != 'DEPROVISIONED': # Must call deactivate_or_delete_user twice.
-                    await client.deactivate_or_delete_user(user.id)
+    global client
+    async with okta.client.Client() as client:
+        # SUSPENDED, DEPROVISIONED, etc. see https://developer.okta.com/docs/reference/api/users/#user-properties
+        async for user in get_users(filter='status eq "SUSPENDED"'):
+            print(user.profile.login, user.status) # Add more properties here.
+            if user.status != 'DEPROVISIONED': # Must call deactivate_or_delete_user twice.
                 await client.deactivate_or_delete_user(user.id)
+            await client.deactivate_or_delete_user(user.id)
 
-            users, err = await resp.next() if resp.has_next() else (None, None)
+async def get_users(**params):
+    users, resp, _ = await client.list_users(params)
+    while users:
+        for user in users:
+            yield user
+        users, _ = await resp.next() if resp.has_next() else (None, None)
 
-
-loop = asyncio.get_event_loop()
-loop.run_until_complete(main())
+asyncio.run(main())
