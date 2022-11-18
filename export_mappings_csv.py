@@ -1,19 +1,9 @@
-"""
-pip install requests # or pip3
-pip install python-dotenv
-"""
-
-import requests
-from dotenv import load_dotenv
-import os
+import requests # pip install requests
 import csv
 
-load_dotenv()
-
-# Store these in a local .env file.
-url = os.getenv('OKTA_ORG_URL')
-token = os.getenv('OKTA_API_TOKEN')
-
+# Set these:
+url = 'https://EXAMPLE.okta.com'
+token = '...'
 filename = 'mappings.csv'
 
 headers = {
@@ -43,8 +33,8 @@ def main():
                 })
     export_csv(filename, mappings, mappings[0].keys())
 
-def get_mapping_pages(**kwargs):
-    page = get_mappings(**kwargs) 
+def get_mapping_pages(**params):
+    page = get_mappings(**params) 
     while page:
         yield page
         page = get_next_page(page.links)  
@@ -52,8 +42,8 @@ def get_mapping_pages(**kwargs):
 def get_mapping(id):
     return session.get(f'{url}/api/v1/mappings/{id}')
 
-def get_mappings(**kwargs):
-    return session.get(f'{url}/api/v1/mappings', params=kwargs)
+def get_mappings(**params):
+    return session.get(f'{url}/api/v1/mappings', params=params)
 
 def get_next_page(links):
     next = links.get('next')
