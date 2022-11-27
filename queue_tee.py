@@ -32,5 +32,4 @@ async def task(i):
         counts[i] += 1
         # print(i, user.id) # , ', '.join([g.id for g in gs]))
 
-loop = asyncio.get_event_loop()
-loop.run_until_complete(main())
+asyncio.run(main())
