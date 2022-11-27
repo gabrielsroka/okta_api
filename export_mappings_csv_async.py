@@ -97,8 +97,7 @@ async def snooze(r):
             await asyncio.sleep(delay)
 
 start = datetime.now()
-loop = asyncio.get_event_loop()
-loop.run_until_complete(main())
+asyncio.run(main())
 
 end = datetime.now()
 print(end - start)
