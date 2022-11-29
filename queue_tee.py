@@ -3,27 +3,29 @@ import asyncio
 
 limit = 75 # 15, 35, or 75. see https://developer.okta.com/docs/reference/rl-additional-limits/#concurrent-rate-limits
 
-users = []
+client: okta.client.Client
+users: list
 counts = [0] * limit
-client = okta.client.Client()
 
 async def main():
-    print('get users')
-    global users
-    users, resp, _ = await client.list_users()
-    for i in range(2):
-        more_users, _ = await resp.next() if resp.has_next() else (None, None)
-        users.extend(more_users)
-    users = users[0:525]
+    global client
+    async with okta.client.Client() as client:
+        print('get users')
+        global users
+        users, resp, _ = await client.list_users()
+        for i in range(2):
+            more_users, _ = await resp.next() if resp.has_next() else (None, None)
+            users.extend(more_users)
+        users = users[0:525]
 
-    print('start tasks')
-    tasks = [task(i) for i in range(limit)]
-    await asyncio.gather(*tasks)
+        print('start tasks')
+        tasks = (task(i) for i in range(limit))
+        await asyncio.gather(*tasks)
 
-    counts.sort()
-    for i in counts:
-        print(i)
-    print(sum(counts))
+        counts.sort()
+        for i in counts:
+            print(i)
+        print(sum(counts))
 
 async def task(i):
     while users:
