@@ -71,7 +71,7 @@ def send_push(factors, state_token):
 def admin_sign_in():
     response = session.get(f'{okta_url}/home/admin-entry')
 
-    # old stlye
+    # old style
     match = re.search(r'"token":\["(.*)"\]', response.text)
     if match:
         body = {'token': match.group(1)}
