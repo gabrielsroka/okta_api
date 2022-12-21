@@ -35,6 +35,25 @@ def export_users():
     if users:
         okta_api.export_csv('users.csv', users, users[0].keys())
 
+def export_users_and_factors():
+    # Export to CSV.
+    print('Getting users.')
+    users = []
+    for page in okta_api.get_user_pages(): # filter='profile.lastName eq "Doe"'): # limit=2
+        for user in page.json():
+            factors = okta_api.get_user_factors(user['id']).json()
+            webauthn_factors = [f['profile']['authenticatorName'] or 'N/A' for f in factors if f['factorType'] == 'webauthn' and 'profile' in f]
+            users.append({
+                'id': user['id'], 
+                'login': user['profile']['login'],
+                'email': user['profile']['email'],
+                'webauthn': '; '.join(webauthn_factors)
+            })
+        print('Total users found:', len(users))
+
+    if users:
+        okta_api.export_csv('users.csv', users, users[0].keys())
+
 def get_schemas():
     for page in okta_api.get_app_pages():
         for app in page.json():
