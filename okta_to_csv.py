@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 """
 Export Okta groups, apps, and app groups to csv.
 https://github.com/gabrielsroka/okta_api/blob/master/okta_to_csv.py
@@ -33,24 +31,24 @@ Python sqlite: https://docs.python.org/3/library/sqlite3.html
 
 import requests
 import csv
-import os
 from datetime import datetime
 import time
 
 # Set these:
-url = 'https://ORG.okta.com'
-token = os.environ['okta_api_token']
+org_url = 'https://ORG.okta.com'
+token = '...'
 LIMIT_REMAINING = 10
 
 headers = {
-    'Authorization': f'SSWS {token}',
+    'Authorization': 'SSWS ' + token,
     'Accept': 'application/json'
 }
 
 session = requests.Session()
 session.headers.update(headers)
 
-def get_objects(url):
+def get_objects(path):
+    url = org_url + path
     while url:
         res = session.get(url)
         for o in res.json():
@@ -75,7 +73,7 @@ def export_csv(filename, rows, fieldnames):
 
 print('fetching groups')
 groups = []
-for group in get_objects(f'{url}/api/v1/groups'):
+for group in get_objects('/api/v1/groups'):
     groups.append({
         'id':  group['id'],
         'name': group['profile']['name'],
@@ -86,8 +84,8 @@ export_csv('groups.csv', groups, groups[0].keys())
 print('fetching apps and app groups')
 apps = []
 app_groups = []
-for app in get_objects(f'{url}/api/v1/apps'): # ?q=logfood&limit=200
-    for app_group in get_objects(f"{url}/api/v1/apps/{app['id']}/groups"):
+for app in get_objects('/api/v1/apps'): # ?q=logfood&limit=200
+    for app_group in get_objects(f"/api/v1/apps/{app['id']}/groups"):
         app_groups.append({
             'app_id': app['id'],
             'group_id': app_group['id']
