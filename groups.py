@@ -1,15 +1,12 @@
 import okta_api
 
 def import_groups(filename):
+    """CSV should have this header:
+    name,description
+    """
     groups = okta_api.import_csv(filename)
     for group in groups:
-        new_group = {
-            'profile': {
-                'name': group['name'], 
-                'description': group['description']
-            }
-        }
-        okta_api.new_group(new_group)
+        okta_api.new_group({'profile': group})
 
 def add_users_to_group(filename, groupid):
     users = okta_api.import_csv(filename)
