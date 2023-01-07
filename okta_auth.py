@@ -10,13 +10,11 @@ import requests
 import getpass
 import time
 import re
-from dotenv import load_dotenv
 import os
 
-load_dotenv()
-# Store these in a local .env file.
-okta_url = os.getenv('OKTA_ORG_URL') # eg https://XXX.okta.com
-username = os.getenv('OKTA_USERNAME')
+# Set these:
+okta_url = 'https://ORG.okta.com'
+username = '...'
 
 okta_admin_url = okta_url.replace('.', '-admin.', 1)
 
@@ -36,7 +34,7 @@ def sign_in():
     password = getpass.getpass()
 
     print('Signing in...')
-    response = session.post(f'{okta_url}/api/v1/authn', json={'username': username, 'password': password})
+    response = session.post(okta_url + '/api/v1/authn', json={'username': username, 'password': password})
     authn = response.json()
     if not response.ok:
         print(authn['errorSummary'])
@@ -47,7 +45,7 @@ def sign_in():
     else:
         token = authn['sessionToken']
 
-    session.get(f'{okta_url}/login/sessionCookieRedirect?redirectUrl=/&token={token}' )
+    session.get(okta_url + '/login/sessionCookieRedirect?redirectUrl=/&token=' + token)
 
 def send_push(factors, state_token):
     print('Push MFA...')
@@ -69,13 +67,13 @@ def send_push(factors, state_token):
             exit()
 
 def admin_sign_in():
-    response = session.get(f'{okta_url}/home/admin-entry')
+    response = session.get(okta_url + '/home/admin-entry')
 
     # old style
     match = re.search(r'"token":\["(.*)"\]', response.text)
     if match:
         body = {'token': match.group(1)}
-        response = session.post(f'{okta_admin_url}/admin/sso/request', data=body)
+        response = session.post(okta_admin_url + '/admin/sso/request', data=body)
 
     # new style (w/ new OIDC flow)
     match = re.search(r'<span.* id="_xsrfToken">(.*)</span>', response.text)
@@ -93,18 +91,18 @@ def send_notification(admin_xsrf_token, userid):
         'groups': []
     }
     headers = {'X-Okta-XsrfToken': admin_xsrf_token}
-    notification = session.post(f'{okta_admin_url}/api/internal/admin/notification', json=body, headers=headers).json()
+    notification = session.post(okta_admin_url + '/api/internal/admin/notification', json=body, headers=headers).json()
     print('\nNotification:')
     print(notification)
 
 def get_user(userid):
-    user = session.get(f'{okta_url}/api/v1/users/{userid}').json()
+    user = session.get(okta_url + '/api/v1/users/' + userid).json()
     print('\nUser:')
     print(user)
     return user
 
 def get_user_factors(userid):
-    factors = session.get(f'{okta_url}/api/v1/users/{userid}/factors').json()
+    factors = session.get(okta_url +'/api/v1/users/' + userid + '/factors').json()
     print('\nFactors:')
     print(factors)
 
