@@ -19,5 +19,5 @@ user = {
         'login': 'python@example.com'
     }
 }
-res = session.post(f'{url}/api/v1/users', json=user, headers=headers)
+res = session.post(f'{url}/api/v1/users', json=user)
 print(res.ok)
