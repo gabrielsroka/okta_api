@@ -1,17 +1,13 @@
 import requests
 
 # Set these:
-url = 'https://EXAMPLE.okta.com'
+org_url = 'https://EXAMPLE.okta.com'
 token = '...'
 filename = 'mappings.json'
 
-headers = {
-    'Authorization': f'SSWS {token}',
-    'Accept': 'application/json'
-}
-
+# When making multiple calls, session is faster than requests.
 session = requests.Session()
-session.headers.update(headers)
+session.headers['authorization'] = 'SSWS ' + token
 
 def main():
     mappings = []
@@ -34,10 +30,10 @@ def get_mapping_pages(**params):
         page = get_next_page(page.links)  
 
 def get_mapping(id):
-    return session.get(f'{url}/api/v1/mappings/{id}')
+    return session.get(f'{org_url}/api/v1/mappings/{id}')
 
 def get_mappings(**params):
-    return session.get(f'{url}/api/v1/mappings', params=params)
+    return session.get(f'{org_url}/api/v1/mappings', params=params)
 
 def get_next_page(links):
     next = links.get('next')

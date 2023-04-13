@@ -39,13 +39,9 @@ org_url = 'https://ORG.okta.com'
 token = '...'
 LIMIT_REMAINING = 10
 
-headers = {
-    'Authorization': 'SSWS ' + token,
-    'Accept': 'application/json'
-}
-
+# When making multiple calls, session is faster than requests.
 session = requests.Session()
-session.headers.update(headers)
+session.headers['authorization'] = 'SSWS ' + token
 
 def get_objects(path):
     url = org_url + path

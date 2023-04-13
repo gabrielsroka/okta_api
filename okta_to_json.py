@@ -4,13 +4,12 @@
 
 import requests
 import json
-import os
 from datetime import datetime
 import time
 
 # Set these:
-url = os.environ['OKTA_ORG_URL'] # eg 'https://ORG.okta.com'
-token = os.environ['okta_api_token']
+org_url = '...'
+token = '...'
 LIMIT_REMAINING = 10
 
 def fetch(url, name):
@@ -51,16 +50,12 @@ def to_json(o):
     del o['_links']
     return json.dumps(o, separators=(',', ':'))
 
-headers = {
-    'Authorization': f'SSWS {token}',
-    'Accept': 'application/json'
-}
-
+# When making multiple calls, session is faster than requests.
 session = requests.Session()
-session.headers.update(headers)
+session.headers['authorization'] = 'SSWS ' + token
 
-fetch(f'{url}/api/v1/groups', 'groups')
-fetch_sub(f'{url}/api/v1/apps?limit=200', 'apps', 'groups')
+fetch(f'{org_url}/api/v1/groups', 'groups')
+fetch_sub(f'{org_url}/api/v1/apps?limit=200', 'apps', 'groups')
 
 
 """

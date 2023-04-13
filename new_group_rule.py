@@ -1,17 +1,12 @@
-from dotenv import load_dotenv
-import os
 import requests
 
-load_dotenv()
-url = os.getenv('OKTA_ORG_URL')
-token = os.getenv('OKTA_API_TOKEN')
+# Set these:
+org_url = '...'
+token = '...'
 
-headers = {
-    'Authorization': f'SSWS {token}',
-    'Accept': 'application/json'
-}
+# When making multiple calls, session is faster than requests.
 session = requests.Session()
-session.headers.update(headers)
+session.headers['authorization'] = 'SSWS ' + token
 
 oldGroupId = '00g9raeyraaWXn1zF0h7'
 newGroupId = '00goz2pusnPu0lRCB0h7'
@@ -32,5 +27,5 @@ group_rule = {
         }
     }
 }
-res = session.post(f'{url}/api/v1/groups/rules', json=group_rule)
+res = session.post(f'{org_url}/api/v1/groups/rules', json=group_rule)
 print(res.ok)

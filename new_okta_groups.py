@@ -1,18 +1,12 @@
-from dotenv import load_dotenv
 import requests
-import os
 
-load_dotenv()
-url = os.getenv('OKTA_ORG_URL')
-token = os.getenv('OKTA_API_TOKEN')
+# Set these:
+org_url = '...'
+token = '...'
 
-headers = {
-    'Authorization': f'SSWS {token}',
-    'Accept': 'application/json'
-}
-
+# When making multiple calls, session is faster than requests.
 session = requests.Session()
-session.headers.update(headers)
+session.headers['authorization'] = 'SSWS ' + token
 
 names = ['Finance', 'Legal']
 for name in names:
