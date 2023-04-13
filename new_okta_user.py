@@ -1,15 +1,12 @@
 import requests
 
 # Set these:
-url = '...'
+org_url = '...'
 token = '...'
 
-headers = {
-    'Authorization': f'SSWS {token}',
-    'Accept': 'application/json'
-}
+# When making multiple calls, session is faster than requests.
 session = requests.Session()
-session.headers.update(headers)
+session.headers['authorization'] = 'SSWS ' + token
 
 user = {
     'profile': {
@@ -19,5 +16,5 @@ user = {
         'login': 'python@example.com'
     }
 }
-res = session.post(f'{url}/api/v1/users', json=user)
+res = session.post(org_url + '/api/v1/users', json=user)
 print(res.ok)
