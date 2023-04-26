@@ -16,5 +16,5 @@ for name in names:
             'description': ''
         }
     }
-    res = session.post(f'{url}/api/v1/groups', json=group)
+    res = session.post(org_url + '/api/v1/groups', json=group)
     print(res.ok)
