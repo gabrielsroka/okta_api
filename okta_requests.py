@@ -3,10 +3,10 @@ import os
 
 # If you're making multiple API calls, using a session is much faster.
 class Session(requests.Session):
-    def __init__(self):
+    def __init__(self, org_url=os.environ['OKTA_CLIENT_ORGURL'], token=os.environ['OKTA_CLIENT_TOKEN']):
         super().__init__()
-        self.org_url = os.environ['OKTA_CLIENT_ORGURL']
-        self.headers['authorization'] = 'SSWS ' + os.environ['OKTA_CLIENT_TOKEN']
+        self.org_url = org_url
+        self.headers['authorization'] = 'SSWS ' + token
 
     def request(self, method, url, **kwargs):
         if not url.startswith('https:'):
