@@ -29,7 +29,7 @@ def main():
     get_user_factors(user['id'])
 
 def sign_in():
-    print('URL:', okta_url)
+    print('Okta URL:', okta_url)
     print('Username:', username)
     password = getpass.getpass()
 
