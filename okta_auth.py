@@ -45,7 +45,7 @@ def sign_in():
     else:
         token = authn['sessionToken']
 
-    session.get(okta_url + '/login/sessionCookieRedirect?redirectUrl=/&token=' + token)
+    session.get(okta_url + '/login/sessionCookie?token=' + token)
 
 def send_push(factors, state_token):
     print('Push MFA...')
