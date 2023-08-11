@@ -10,7 +10,6 @@ import requests
 import getpass
 import time
 import re
-import os
 
 # Set these:
 okta_url = 'https://ORG.okta.com'
