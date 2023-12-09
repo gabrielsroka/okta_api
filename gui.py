@@ -34,13 +34,13 @@ def main():
     
     command = lambda _=None: sign_in(url_entry.get(), username_entry.get(), password_entry.get())
     sign_in_button['command'] = command
-    password_entry.bind("<Return>", command)
+    password_entry.bind('<Return>', command)
     password_entry.focus()
     root.mainloop()
 
 def gui(s):
     root = tk.Tk()
-    root.title("Okta")
+    root.title('Okta')
 
     main_frame = ttk.Frame(root)
     main_frame.grid(row=0, sticky='w', padx=10, pady=10)
@@ -66,7 +66,7 @@ def sign_in(okta_url, username, password):
     response = session.post(okta_url + '/api/v1/authn', json={'username': username, 'password': password})
     authn = response.json()
     if not response.ok:
-        messagebox.showerror("Error", authn['errorSummary'])
+        messagebox.showerror('Error', authn['errorSummary'])
         return
 
     if authn['status'] == 'MFA_REQUIRED':
@@ -78,12 +78,12 @@ def sign_in(okta_url, username, password):
 
     user = session.get(okta_url + '/api/v1/users/me').json()
     del user['_links']
-    user_info_text.insert("1.0", json.dumps(user, indent=4))
+    user_info_text.insert('1.0', json.dumps(user, indent=4))
 
 def send_push(factors, state_token):
     push_factors = [f for f in factors if f['factorType'] == 'push']
     if not push_factors:
-        messagebox.showerror("Error", "Push factor not found")
+        messagebox.showerror('Error', 'Push factor not found')
         exit()
 
     push_url = push_factors[0]['_links']['verify']['href']
@@ -95,7 +95,7 @@ def send_push(factors, state_token):
         if result == 'WAITING':
             time.sleep(4)  # 4 seconds
         elif result in ['REJECTED', 'TIMEOUT']:
-            messagebox.showerror("Error", "Push rejected")
+            messagebox.showerror('Error', 'Push rejected')
             exit()
 
 main()
